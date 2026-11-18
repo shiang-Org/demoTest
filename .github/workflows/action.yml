@@ -10,7 +10,21 @@ on:
 
 # 預先定義此 action 要幹嘛
 jobs:
-  demo:
+  demo-test-connection:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Test SFTP Connection to Windows Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          source: "."
+          target: "C:/SpringBoot/demoClass/"
+          overwrite: false
+          rm: false
       - run: echo '執行成功'

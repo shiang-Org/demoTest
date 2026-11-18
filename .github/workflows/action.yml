@@ -4,8 +4,8 @@ run-name: GitHub Actions Demo
 # 觸發此 action 的時機
 on:
   push:
-    branchs:  # 只要有任何一個 commit 被 push，就會觸發此 action
-      '*'
+    branches:  # 修正原本拼錯的 branchs 為 branches
+      - '*'
   workflow_dispatch:  # 可以手動執行此 action
 
 # 預先定義此 action 要幹嘛
@@ -24,7 +24,10 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
           source: "."
-          target: "C:/SpringBoot/demoClass/"
+          # 修正：避開帶有冒號的絕對路徑，改用 OpenSSH 預設家目錄下的相對路徑
+          target: "SpringBoot/demoClass/"
           overwrite: false
           rm: false
-      - run: echo '執行成功'
+
+      - name: Echo Success
+        run: echo '執行成功'

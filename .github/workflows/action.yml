@@ -1,0 +1,40 @@
+name: CI/CD to Nginx
+run-name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  demo-test-connection:
+    runs-on: self-hosted   # 關鍵：改為使用您的自架 Runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+      - name: Install Dependencies & Build
+        run: |
+          npm install
+          npm run build
+          # 驗證：確認指令執行完後專案根目錄會生出 dist 資料夾
+      - name: Deploy to Nginx Directory
+        run: |
+          $targetDir = "C:\nginx\nginx-1.30.6\html\demoClass"
+          
+          # 如果目標資料夾不存在則自動建立
+          if (!(Test-Path $targetDir)) {
+              New-Item -ItemType Directory -Force -Path $targetDir
+          }
+          
+          # 清空舊檔案並複製新打包的 dist 內容過去
+          Remove-Item -Recurse -Force "$targetDir\*" -ErrorAction SilentlyContinue
+          Copy-Item -Recurse -Force "dist\*" $targetDir
+          
+          Write-Host "部署至 Nginx 成功！"
+        # 驗證：確認 C:\nginx\nginx-1.30.6\html\demoClass 內已更新為最新的打包檔案

@@ -17,5 +17,3 @@ jobs:
       - name: Test Local Execution on Windows Server
         run: |
           echo "直接在 Windows 伺服器本地執行成功！"
-          node -v
-          java -version

@@ -23,10 +23,9 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
-          source: "."
-          # 修正：避開帶有冒號的絕對路徑，改用 OpenSSH 預設家目錄下的相對路徑
-          target: "SpringBoot/demoClass/"
-          overwrite: false
+          source: ".github/workflows/action.yml" # 改成傳送這個設定檔本身，檔案極小
+          target: "C:/SpringBoot/demoClass/"
+          overwrite: true
           rm: false
 
       - name: Echo Success

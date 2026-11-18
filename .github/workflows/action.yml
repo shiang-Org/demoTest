@@ -23,10 +23,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
-          source: ".github/workflows/action.yml" # 改成傳送這個設定檔本身，檔案極小
-          target: "C:/SpringBoot/demoClass/"
-          overwrite: true
-          rm: false
-
-      - name: Echo Success
-        run: echo '執行成功'
+          script: |
+            echo "連線成功！"
+            dir C:\SpringBoot\demoClass

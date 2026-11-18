@@ -1,25 +1,16 @@
+name: GitHub Actions Demo
+run-name: GitHub Actions Demo
 
-name: Test Server Connection
-
+# 觸發此 action 的時機
 on:
   push:
-    branches: [ main ]
+    branchs:  # 只要有任何一個 commit 被 push，就會觸發此 action
+      '*'
+  workflow_dispatch:  # 可以手動執行此 action
 
+# 預先定義此 action 要幹嘛
 jobs:
-  test-connection:
+  demo:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Test SFTP Connection to Windows Server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: 22
-          source: "."
-          target: "C:/SpringBoot/demoClass/"
-          overwrite: false
-          rm: false
+      - run: echo '執行成功'

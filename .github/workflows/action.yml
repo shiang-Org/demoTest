@@ -28,12 +28,14 @@ jobs:
       - name: Deploy to Nginx Directory
         run: |
           $targetDir = "C:\nginx\nginx-1.30.6\html\demoClass"
-          
+          # 驗證：確認target dir是否存在
           if (!(Test-Path $targetDir)) {
+              # new-item自動建立
               New-Item -ItemType Directory -Force -Path $targetDir
           }
-          
+          # 清空target dir下的舊檔案
           Remove-Item -Recurse -Force "$targetDir\*" -ErrorAction SilentlyContinue
+          # 將剛才產生的/dist內容物複製並貼到target dir
           Copy-Item -Recurse -Force "dist\*" $targetDir
           
           Write-Host "Deployment completed successfully."

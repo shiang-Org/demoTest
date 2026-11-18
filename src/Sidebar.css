@@ -1,0 +1,34 @@
+/* 移除 Accordion 預設邊框與底色 */
+.sidebar-accordion .accordion-button {
+  background-color: transparent !important;
+  color: #333;
+  font-weight: 500;
+  padding: 8px 12px;
+  box-shadow: none !important;
+}
+
+.sidebar-accordion .accordion-button:not(.collapsed) {
+  color: #2b2b2b;
+}
+
+/* 子選單外框與連結樣式 */
+.sub-menu-box {
+  border-color: #e0e0e0 !important;
+}
+
+.sub-link {
+  color: #555 !important;
+  font-size: 0.9rem;
+  padding: 6px 10px !important;
+  border-radius: 4px;
+}
+
+.sub-link:hover {
+  background-color: #f5f5f5;
+  color: #0d6efd !important;
+}
+
+.logout-btn:hover {
+  background-color: #f8f9fa;
+  color: #dc3545 !important;
+}

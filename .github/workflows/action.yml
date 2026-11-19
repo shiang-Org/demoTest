@@ -41,7 +41,8 @@ jobs:
           #$branchName 取自 ${{ github.ref_name }}（例如 v1.0.1 或 main）
           #並把非英數、點、底線、連字號的字元替換成 _
           $branchName = "${{ github.ref_name }}" -replace '[^a-zA-Z0-9._-]', '_'
-          $shortSha = git rev-parse --short HEAD
+          $shortSha = "${{ github.sha }}".Substring(0, 7)
+          #$shortSha = git rev-parse --short HEAD
           $releaseName = "$branchName-$shortSha"
 
           $frontBase = "C:\nginx\nginx-1.30.6\html\demoClass"

@@ -21,14 +21,14 @@ public class controller {
     private StudentService studentService;
 
     //查詢所有班級
-    @GetMapping("/classes")
+    @GetMapping("/classesV1.0.1")
     public ResponseEntity<List<ClassDTO>> getAllClass(){
         List<ClassDTO> classes = classService.findAll();
         return ResponseEntity.ok(classes);
     }
 
     //查詢所有學生
-    @GetMapping("/students")
+    @GetMapping("/studentsV1.0.1")
     public ResponseEntity<List<StudentDTO>> getAllStudent(){
         List<StudentDTO> students = studentService.findAll();
         return ResponseEntity.ok(students);

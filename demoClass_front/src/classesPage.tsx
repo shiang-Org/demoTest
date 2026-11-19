@@ -20,7 +20,7 @@ function ClassesPage(){
     // 1. 取得學生列表資料函式
     const fetchClasses = () => {
         setLoading(true);
-        api.get<ClassesData[]>(`/api/classes`)
+        api.get<ClassesData[]>(`/api/classesV1.0.1`)
             .then(res => {
                 setClassesData(res.data);
                 setLoading(false);

@@ -22,7 +22,7 @@ function StudentsPage(){
     // 1. 取得學生列表資料函式
     const fetchStudents = () => {
         setLoading(true);
-        api.get<StudentsData[]>(`/api/students`) 
+        api.get<StudentsData[]>(`/api/studentsV1.0.1`) 
             .then(res => {
                 setStudentsData(res.data);
                 setLoading(false);

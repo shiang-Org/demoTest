@@ -1,4 +1,4 @@
-name: CI/CD to Nginx
+name: CI/CD Fullstack Build and Deploy
 run-name: Build and Deploy
 
 on:
@@ -8,36 +8,72 @@ on:
   workflow_dispatch:
 
 jobs:
-  demo-test-connection:
+  build-and-deploy:
     runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Use Node.js
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '26'
 
-      - name: Install Dependencies & Build
+      - name: Build Frontend (React)
         working-directory: demoClass_front
         run: |
           npm install
           npm run build
-        # 驗證：確認指令執行完後專案根目錄會生出 dist 資料夾
 
-      - name: Deploy to Nginx Directory
+      - name: Deploy Frontend to Nginx
         run: |
-          $targetDir = "C:\nginx\nginx-1.30.6\html\demoClass\demoClass_front"
-          # 驗證：確認target dir是否存在
-          if (!(Test-Path $targetDir)) {
-              # new-item自動建立
-              New-Item -ItemType Directory -Force -Path $targetDir
+          $nginxDir = "C:\nginx\nginx-1.30.6\html\demoClass"
+          if (!(Test-Path $nginxDir)) {
+              New-Item -ItemType Directory -Force -Path $nginxDir | Out-Null
           }
-          # 清空target dir下的舊檔案
-          Remove-Item -Recurse -Force "$targetDir\*" -ErrorAction SilentlyContinue
-          # 將剛才產生的/dist內容物複製並貼到target dir
-          Copy-Item -Recurse -Force "dist\*" $targetDir
-          
-          Write-Host "Deployment completed successfully."
-        # 驗證：確認 C:\nginx\nginx-1.30.6\html\demoClass 內已更新為最新的打包檔案
+          Remove-Item -Recurse -Force "$nginxDir\*" -ErrorAction SilentlyContinue
+          Copy-Item -Recurse -Force "demoClass_front\dist\*" $nginxDir
+          Write-Host "Frontend deployed to $nginxDir"
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Build Backend (Spring Boot)
+        working-directory: demoClass_back
+        run: |
+          .\mvnw.cmd clean package -DskipTests
+
+      - name: Deploy Backend Jar and Restart Service
+        run: |
+          $backendDir = "C:\SpringBoot\demoClass"
+          $serviceName = "DemoClassService"
+          $targetJar = "$backendDir\demoClass-0.0.1-SNAPSHOT.jar"
+
+          if (!(Test-Path $backendDir)) {
+              New-Item -ItemType Directory -Force -Path $backendDir | Out-Null
+          }
+
+          $jarFile = Get-ChildItem -Path "demoClass_back\target\*.jar" | Where-Object { $_.Name -notlike "*.original" } | Select-Object -First 1
+          if ($null -eq $jarFile) {
+              throw "No built JAR file found in demoClass_back\target"
+          }
+
+          $svc = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+          if ($null -ne $svc -and $svc.Status -eq 'Running') {
+              Write-Host "Stopping service $serviceName..."
+              Stop-Service -Name $serviceName -Force
+              $svc.WaitForStatus('Stopped', [TimeSpan]::FromSeconds(30))
+          }
+
+          Copy-Item -Force $jarFile.FullName $targetJar
+          Write-Host "Backend JAR copied to $targetJar"
+
+          if ($null -ne $svc) {
+              Write-Host "Starting service $serviceName..."
+              Start-Service -Name $serviceName
+              $svc.WaitForStatus('Running', [TimeSpan]::FromSeconds(30))
+              Write-Host "Service $serviceName is running."
+          }

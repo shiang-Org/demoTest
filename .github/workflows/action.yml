@@ -20,6 +20,7 @@ jobs:
           node-version: '20'
 
       - name: Install Dependencies & Build
+        working-directory: demoClass_front
         run: |
           npm install
           npm run build
@@ -27,7 +28,7 @@ jobs:
 
       - name: Deploy to Nginx Directory
         run: |
-          $targetDir = "C:\nginx\nginx-1.30.6\html\demoClass"
+          $targetDir = "C:\nginx\nginx-1.30.6\html\demoClass\demoClass_front"
           # 驗證：確認target dir是否存在
           if (!(Test-Path $targetDir)) {
               # new-item自動建立

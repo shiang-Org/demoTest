@@ -45,7 +45,7 @@ jobs:
           #$shortSha = git rev-parse --short HEAD
           $releaseName = "$branchName-$shortSha"
 
-          $frontBase = "C:\nginx\nginx-1.30.6\html\demoClass"
+          $frontBase = "C:\nginx\nginx-1.30.7\html\demoClass"
           $frontReleaseDir = "$frontBase\releases\$releaseName"
           $frontCurrentLink = "$frontBase\current"
 
@@ -94,5 +94,5 @@ jobs:
               $svc.WaitForStatus('Running', [TimeSpan]::FromSeconds(30))
           }
 
-          & "C:\nginx\nginx-1.30.6\nginx.exe" -p "C:\nginx\nginx-1.30.6" -s reload
+          & "C:\nginx\nginx-1.30.7\nginx.exe" -p "C:\nginx\nginx-1.30.7" -s reload
           Write-Host "Deployed $releaseName and switched current links."
